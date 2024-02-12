@@ -24,8 +24,9 @@ const taskReducer = (state, action) => {
           description: action.payload.description,
         },
       ];
+
     case "EDIT_TASK":
-      return state.map((tsk) =>
+      return state?.map((tsk) =>
         tsk.id === action.payload.id
           ? {
               ...tsk,
@@ -33,10 +34,30 @@ const taskReducer = (state, action) => {
             }
           : tsk
       );
+
+    case "TOGGLE_FAVORITE":
+      return state?.map((tsk) =>
+        tsk.id === action.payload
+          ? {
+              ...tsk,
+              isFavorite: !tsk.isFavorite,
+            }
+          : tsk
+      );
+
+    case "SEARCH_TASK":
+      return action.payload
+        ? state?.filter((tsk) =>
+            tsk.title.toLowerCase().includes(action.payload.toLowerCase())
+          )
+        : state;
+
     case "DELETE_TASK":
-      return state.filter((tsk) => tsk.id !== action.payload);
+      return state?.filter((tsk) => tsk.id !== action.payload);
+
     case "DELETE_ALL_TASK":
-      return (state.length = 0);
+      return (state?.length = 0);
+
     default:
       return state;
   }

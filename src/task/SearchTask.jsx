@@ -1,6 +1,15 @@
-export default function SearchTask() {
+import { useState } from "react";
+
+export default function SearchTask({ onSearch }) {
+  const [searchValue, setSearchValue] = useState("");
+
+  const onSearchClick = (evt) => {
+    evt.preventDefault();
+    onSearch(searchValue);
+  };
+
   return (
-    <form>
+    <form onChange={onSearchClick}>
       <div className="flex">
         <div className="relative overflow-hidden rounded-lg text-gray-50 md:min-w-[380px] lg:min-w-[440px]">
           <input
@@ -8,12 +17,10 @@ export default function SearchTask() {
             id="search-dropdown"
             className="z-20 block w-full bg-gray-800 px-4 py-2 pr-10 focus:outline-none"
             placeholder="Search Task"
+            onChange={(evt) => setSearchValue(evt.target.value)}
             required
           />
-          <button
-            type="submit"
-            className="absolute right-2 top-0 h-full rounded-e-lg text-white md:right-4"
-          >
+          <button className="absolute right-2 top-0 h-full rounded-e-lg text-white md:right-4">
             <svg
               className="h-4 w-4"
               aria-hidden="true"

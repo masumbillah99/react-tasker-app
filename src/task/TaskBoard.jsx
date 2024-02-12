@@ -1,5 +1,4 @@
 import { useContext, useState } from "react";
-import { toast } from "react-toastify";
 import { TaskContext } from "../context";
 import AddTaskModal from "./AddTaskModal";
 import SearchTask from "./SearchTask";
@@ -42,6 +41,24 @@ export default function TaskBoard() {
     }
   };
 
+  // logic for make favorite a task
+  const handleToggleFavorite = (tskId) => {
+    dispatch({
+      type: "TOGGLE_FAVORITE",
+      payload: tskId,
+    });
+  };
+
+  // logic for task search
+  const handleSearch = (searchValue) => {
+    dispatch({
+      type: "SEARCH_TASK",
+      payload: searchValue,
+    });
+  };
+
+  // console.log(tasks);
+
   return (
     <section className="mb-20" id="tasks">
       {showAddModal && (
@@ -56,7 +73,7 @@ export default function TaskBoard() {
           <div className="mb-14 items-center justify-between sm:flex">
             <h2 className="text-2xl font-semibold max-sm:mb-4">Your Tasks</h2>
             <div className="flex items-center space-x-5">
-              <SearchTask />
+              <SearchTask onSearch={handleSearch} />
               <TaskAction
                 onAddClick={() => setShowAddModal(true)}
                 onDeleteAllClick={handleDeleteAllTask}
@@ -69,6 +86,7 @@ export default function TaskBoard() {
               tasks={tasks}
               onEdit={handleEditTask}
               onDelete={handleDeleteTask}
+              onFavorite={handleToggleFavorite}
             />
           ) : (
             <p className="text-3xl text-center text-white font-semibold py-5">
