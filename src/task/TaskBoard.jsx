@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useContext } from "react";
+import { useContext, useState } from "react";
+import { toast } from "react-toastify";
 import { TaskContext } from "../context";
 import AddTaskModal from "./AddTaskModal";
 import SearchTask from "./SearchTask";
@@ -7,12 +7,39 @@ import TaskAction from "./TaskAction";
 import TaskList from "./TaskList";
 
 export default function TaskBoard() {
-  const { state, showAddModal, setShowAddModal } = useContext(TaskContext);
+  const { tasks, dispatch, showAddModal, setShowAddModal } =
+    useContext(TaskContext);
   const [tskToUpdate, setTskToUpdate] = useState(null);
 
   const handleEditTask = (tsk) => {
     setTskToUpdate(tsk);
     setShowAddModal(true);
+  };
+
+  // logic for delete a single task
+  const handleDeleteTask = (tskId) => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
+    if (isConfirmed) {
+      dispatch({
+        type: "DELETE_TASK",
+        payload: tskId,
+      });
+    }
+  };
+
+  // logic for delete all task
+  const handleDeleteAllTask = () => {
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete all the task?"
+    );
+    if (isConfirmed) {
+      dispatch({
+        type: "DELETE_ALL_TASK",
+        tasks,
+      });
+    }
   };
 
   return (
@@ -30,11 +57,24 @@ export default function TaskBoard() {
             <h2 className="text-2xl font-semibold max-sm:mb-4">Your Tasks</h2>
             <div className="flex items-center space-x-5">
               <SearchTask />
-              <TaskAction onAddClick={() => setShowAddModal(true)} />
+              <TaskAction
+                onAddClick={() => setShowAddModal(true)}
+                onDeleteAllClick={handleDeleteAllTask}
+              />
             </div>
           </div>
 
-          <TaskList tasks={state} onEdit={handleEditTask} />
+          {tasks.length > 0 ? (
+            <TaskList
+              tasks={tasks}
+              onEdit={handleEditTask}
+              onDelete={handleDeleteTask}
+            />
+          ) : (
+            <p className="text-3xl text-center text-white font-semibold py-5">
+              Task List is empty!
+            </p>
+          )}
         </div>
       </div>
     </section>
