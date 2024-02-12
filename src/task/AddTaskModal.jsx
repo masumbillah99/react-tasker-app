@@ -1,17 +1,21 @@
 import { useContext, useState } from "react";
+import { toast } from "react-toastify";
 import { TaskContext } from "../context";
 
-export default function AddTaskModal() {
-  const { tasks, setTasks, showAddModal, setShowAddModal } =
-    useContext(TaskContext);
-  const [tsk, setTsk] = useState({
-    id: crypto.randomUUID(),
-    title: "",
-    description: "",
-    tags: [],
-    priority: "",
-    isFavorite: false,
-  });
+export default function AddTaskModal({ tskToUpdate, setTskToUpdate }) {
+  const { dispatch, setShowAddModal } = useContext(TaskContext);
+  const [tsk, setTsk] = useState(
+    tskToUpdate || {
+      id: crypto.randomUUID(),
+      title: "",
+      description: "",
+      tags: [],
+      priority: "",
+      isFavorite: false,
+    }
+  );
+  const [isAdd, setIsAdd] = useState(Object.is(tskToUpdate, null));
+  // console.log(isAdd);
 
   const handleChange = (e) => {
     const name = e.target.name;
@@ -29,13 +33,39 @@ export default function AddTaskModal() {
   };
 
   const handleAddTask = (newTsk) => {
-    event.preventDefault();
-    setTasks([...tasks, newTsk]);
+    event.preventDefault;
+
+    /** logic for empty fields */
+    if (
+      !newTsk.title.trim() ||
+      !newTsk.description.trim() ||
+      !newTsk.priority
+    ) {
+      toast.warn("Please fill out all the required fields");
+      return;
+    }
+
+    /** dispatch an action to add the new task */
+    if (isAdd) {
+      dispatch({
+        type: "ADD_TASK",
+        payload: newTsk,
+      });
+    } else {
+      dispatch({
+        type: "EDIT_TASK",
+        payload: newTsk,
+      });
+    }
+
     setShowAddModal(false);
+    // set tsk to update state null & false
+    setTskToUpdate(null);
   };
 
   const handleClose = () => {
-    setShowAddModal(!showAddModal);
+    setShowAddModal(false);
+    setTskToUpdate(null);
   };
 
   return (
@@ -43,7 +73,7 @@ export default function AddTaskModal() {
       <div className="bg-black bg-opacity-70 h-full w-full z-10 absolute top-0 left-0"></div>
       <form className="mx-auto my-10 w-full max-w-[740px] rounded-xl border border-[#FEFBFB]/[36%] bg-[#191D26] p-9 max-md:px-4 lg:my-20 lg:p-11 z-10 absolute lg:top-40 left-0 lg:left-1/3">
         <h2 className="mb-9 text-center text-2xl font-bold text-white lg:mb-11 lg:text-[28px]">
-          Add New Task
+          {isAdd ? "Add New Task" : "Edit Task"}
         </h2>
 
         <div className="space-y-9 text-white lg:space-y-10">
@@ -106,9 +136,9 @@ export default function AddTaskModal() {
           <button
             type="submit"
             className="rounded bg-blue-600 px-4 py-2 text-white transition-all hover:opacity-80"
-            onClick={() => handleAddTask(tsk)}
+            onClick={() => handleAddTask(tsk, isAdd)}
           >
-            Create new Task
+            {isAdd ? "Create new Task" : "Update Task"}
           </button>
           <button
             className="rounded bg-red-600 px-4 py-2 text-white transition-all hover:opacity-80"

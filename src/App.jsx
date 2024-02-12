@@ -1,10 +1,14 @@
-import { useState } from "react";
 import "./App.css";
+import { useReducer } from "react";
+import { useState } from "react";
+import { ToastContainer } from "react-toastify";
 import { TaskContext } from "./context";
 import Footer from "./Footer";
 import HeroSection from "./HeroSection";
 import Navbar from "./Navbar";
 import TaskBoard from "./task/TaskBoard";
+import { initialState, taskReducer } from "./reducer/TaskReducer";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const defaultTask = {
@@ -18,10 +22,11 @@ function App() {
   };
   const [tasks, setTasks] = useState([defaultTask]);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [state, dispatch] = useReducer(taskReducer, initialState);
 
   return (
     <TaskContext.Provider
-      value={{ tasks, setTasks, showAddModal, setShowAddModal }}
+      value={{ state, dispatch, showAddModal, setShowAddModal }}
     >
       <div className="bg-[#191D26] font-[Inter] text-white">
         <Navbar />
@@ -31,6 +36,8 @@ function App() {
         </div>
         <Footer />
       </div>
+
+      <ToastContainer />
     </TaskContext.Provider>
   );
 }

@@ -1,4 +1,4 @@
-export default function TaskList({ tasks }) {
+export default function TaskList({ tasks, onEdit }) {
   return (
     <div className="overflow-auto">
       <table className="table-fixed overflow-auto xl:w-full">
@@ -69,7 +69,12 @@ export default function TaskList({ tasks }) {
               <td>
                 <div className="flex items-center justify-center space-x-3">
                   <button className="text-red-500">Delete</button>
-                  <button className="text-blue-500">Edit</button>
+                  <button
+                    className="text-blue-500"
+                    onClick={() => onEdit(task)}
+                  >
+                    Edit
+                  </button>
                 </div>
               </td>
             </tr>

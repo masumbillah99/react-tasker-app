@@ -1,5 +1,5 @@
-import { useContext } from "react";
 import { useState } from "react";
+import { useContext } from "react";
 import { TaskContext } from "../context";
 import AddTaskModal from "./AddTaskModal";
 import SearchTask from "./SearchTask";
@@ -7,11 +7,22 @@ import TaskAction from "./TaskAction";
 import TaskList from "./TaskList";
 
 export default function TaskBoard() {
-  const { tasks, showAddModal, setShowAddModal } = useContext(TaskContext);
+  const { state, showAddModal, setShowAddModal } = useContext(TaskContext);
+  const [tskToUpdate, setTskToUpdate] = useState(null);
+
+  const handleEditTask = (tsk) => {
+    setTskToUpdate(tsk);
+    setShowAddModal(true);
+  };
 
   return (
     <section className="mb-20" id="tasks">
-      {showAddModal && <AddTaskModal />}
+      {showAddModal && (
+        <AddTaskModal
+          tskToUpdate={tskToUpdate}
+          setTskToUpdate={setTskToUpdate}
+        />
+      )}
 
       <div className="container">
         <div className="rounded-xl border border-[rgba(206,206,206,0.12)] bg-[#1D212B] px-6 py-8 md:px-9 md:py-16">
@@ -23,7 +34,7 @@ export default function TaskBoard() {
             </div>
           </div>
 
-          <TaskList tasks={tasks} />
+          <TaskList tasks={state} onEdit={handleEditTask} />
         </div>
       </div>
     </section>
