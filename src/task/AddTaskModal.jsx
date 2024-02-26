@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
-import { TaskContext } from "../context";
+import { TaskContext } from "../context/TaskContext";
 
 export default function AddTaskModal({ tskToUpdate, setTskToUpdate }) {
   const [tsk, setTsk] = useState(

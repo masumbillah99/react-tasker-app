@@ -37,7 +37,7 @@ const taskReducer = (tasks, action) => {
       return tasks?.filter((tsk) => tsk.id !== action.payload);
 
     case "DELETE_ALL_TASK":
-      return (tasks.length = 0);
+      return [];
 
     default:
       return tasks;

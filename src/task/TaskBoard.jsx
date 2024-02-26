@@ -1,5 +1,6 @@
 import { useContext, useState } from "react";
-import { TaskContext } from "../context";
+import { toast } from "react-toastify";
+import { TaskContext } from "../context/TaskContext";
 import ConfirmModal from "../modals/ConfirmModal";
 import AddTaskModal from "./AddTaskModal";
 import SearchTask from "./SearchTask";
@@ -40,15 +41,19 @@ export default function TaskBoard() {
     // setModalOpen(true);
     // setMessage("all tasks");
 
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete all the task?"
-    );
-    if (isConfirmed) {
-      dispatch({
-        type: "DELETE_ALL_TASK",
-        tasks,
-      });
-    }
+    dispatch({ type: "DELETE_ALL_TASK" });
+
+    toast.success(`All tasks are deleted successfully`);
+
+    // const isConfirmed = window.confirm(
+    //   "Are you sure you want to delete all the task?"
+    // );
+    // if (isConfirmed) {
+    //   dispatch({
+    //     type: "DELETE_ALL_TASK",
+    //     tasks,
+    //   });
+    // }
   };
 
   // logic for make favorite a task
@@ -86,14 +91,13 @@ export default function TaskBoard() {
             </div>
           </div>
 
-          {/* {modalOpen && (
+          {modalOpen && (
             <ConfirmModal
               isOpen={modalOpen}
               message={message}
-              onConfirm={onConfirm}
               onClose={() => setModalOpen(false)}
             />
-          )} */}
+          )}
 
           {tasks.length > 0 ? (
             searchResultTasks.length > 0 ? (
