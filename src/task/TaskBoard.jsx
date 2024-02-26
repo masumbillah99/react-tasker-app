@@ -1,14 +1,17 @@
 import { useContext, useState } from "react";
 import { TaskContext } from "../context";
+import ConfirmModal from "../modals/ConfirmModal";
 import AddTaskModal from "./AddTaskModal";
 import SearchTask from "./SearchTask";
 import TaskAction from "./TaskAction";
 import TaskList from "./TaskList";
 
 export default function TaskBoard() {
-  const { tasks, dispatch, showAddModal, setShowAddModal } =
+  const { tasks, dispatch, keyword, showAddModal, setShowAddModal } =
     useContext(TaskContext);
   const [tskToUpdate, setTskToUpdate] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleEditTask = (tsk) => {
     setTskToUpdate(tsk);
@@ -17,6 +20,10 @@ export default function TaskBoard() {
 
   // logic for delete a single task
   const handleDeleteTask = (tskId) => {
+    // setModalOpen(true);
+    // const thisTsk = tasks.filter((tsk) => tsk.id === tskId);
+    // setMessage(thisTsk[0].title + " task");
+
     const isConfirmed = window.confirm(
       "Are you sure you want to delete this task?"
     );
@@ -30,6 +37,9 @@ export default function TaskBoard() {
 
   // logic for delete all task
   const handleDeleteAllTask = () => {
+    // setModalOpen(true);
+    // setMessage("all tasks");
+
     const isConfirmed = window.confirm(
       "Are you sure you want to delete all the task?"
     );
@@ -49,15 +59,10 @@ export default function TaskBoard() {
     });
   };
 
-  // logic for task search
-  const handleSearch = (searchValue) => {
-    dispatch({
-      type: "SEARCH_TASK",
-      payload: searchValue,
-    });
-  };
-
-  // console.log(tasks);
+  // filter out matched search result tasks
+  const searchResultTasks = tasks.filter((tsk) =>
+    tsk.title.toLowerCase().includes(keyword.toLowerCase())
+  );
 
   return (
     <section className="mb-20" id="tasks">
@@ -73,7 +78,7 @@ export default function TaskBoard() {
           <div className="mb-14 items-center justify-between sm:flex">
             <h2 className="text-2xl font-semibold max-sm:mb-4">Your Tasks</h2>
             <div className="flex items-center space-x-5">
-              <SearchTask onSearch={handleSearch} />
+              <SearchTask />
               <TaskAction
                 onAddClick={() => setShowAddModal(true)}
                 onDeleteAllClick={handleDeleteAllTask}
@@ -81,16 +86,31 @@ export default function TaskBoard() {
             </div>
           </div>
 
-          {tasks.length > 0 ? (
-            <TaskList
-              tasks={tasks}
-              onEdit={handleEditTask}
-              onDelete={handleDeleteTask}
-              onFavorite={handleToggleFavorite}
+          {/* {modalOpen && (
+            <ConfirmModal
+              isOpen={modalOpen}
+              message={message}
+              onConfirm={onConfirm}
+              onClose={() => setModalOpen(false)}
             />
+          )} */}
+
+          {tasks.length > 0 ? (
+            searchResultTasks.length > 0 ? (
+              <TaskList
+                tasks={searchResultTasks}
+                onEdit={handleEditTask}
+                onDelete={handleDeleteTask}
+                onFavorite={handleToggleFavorite}
+              />
+            ) : (
+              <p className="text-3xl text-center text-white font-semibold py-5">
+                Not found {keyword} task
+              </p>
+            )
           ) : (
             <p className="text-3xl text-center text-white font-semibold py-5">
-              Task List is empty!
+              Opps! Task List is empty...
             </p>
           )}
         </div>

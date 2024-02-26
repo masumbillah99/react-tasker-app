@@ -1,15 +1,17 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { TaskContext } from "../context";
 
-export default function SearchTask({ onSearch }) {
-  const [searchValue, setSearchValue] = useState("");
+export default function SearchTask({}) {
+  // const [searchValue, setSearchValue] = useState("");
+  const { setKeyword } = useContext(TaskContext);
 
-  const onSearchClick = (evt) => {
-    evt.preventDefault();
-    onSearch(searchValue);
-  };
+  // const onSearchClick = (evt) => {
+  //   evt.preventDefault();
+  //   onSearch(keyword);
+  // };
 
   return (
-    <form onChange={onSearchClick}>
+    <form>
       <div className="flex">
         <div className="relative overflow-hidden rounded-lg text-gray-50 md:min-w-[380px] lg:min-w-[440px]">
           <input
@@ -17,7 +19,7 @@ export default function SearchTask({ onSearch }) {
             id="search-dropdown"
             className="z-20 block w-full bg-gray-800 px-4 py-2 pr-10 focus:outline-none"
             placeholder="Search Task"
-            onChange={(evt) => setSearchValue(evt.target.value)}
+            onChange={(evt) => setKeyword(evt.target.value)}
             required
           />
           <button className="absolute right-2 top-0 h-full rounded-e-lg text-white md:right-4">

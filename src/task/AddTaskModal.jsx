@@ -3,7 +3,6 @@ import { toast } from "react-toastify";
 import { TaskContext } from "../context";
 
 export default function AddTaskModal({ tskToUpdate, setTskToUpdate }) {
-  const { dispatch, setShowAddModal } = useContext(TaskContext);
   const [tsk, setTsk] = useState(
     tskToUpdate || {
       id: crypto.randomUUID(),
@@ -11,24 +10,24 @@ export default function AddTaskModal({ tskToUpdate, setTskToUpdate }) {
       description: "",
       tags: [],
       priority: "",
-      isFavorite: false,
     }
   );
-  const [isAdd, setIsAdd] = useState(Object.is(tskToUpdate, null));
-  // console.log(isAdd);
+  const { dispatch, setShowAddModal } = useContext(TaskContext);
 
   const handleChange = (e) => {
     const name = e.target.name;
     let value = e.target.value;
 
     // split tags by comma separate
-    if (name === "tags") {
-      value = value.split(",");
-    }
+    // if (name === "tags") {
+    //   value = value.split(",");
+    //   setTagsEntered(value.length > 0);
+    // }
 
     setTsk({
       ...tsk,
-      [name]: value,
+      [name]:
+        name === "tags" ? (value.trim() !== "" ? value.split(",") : []) : value,
     });
   };
 
@@ -37,30 +36,35 @@ export default function AddTaskModal({ tskToUpdate, setTskToUpdate }) {
 
     /** logic for empty fields */
     if (
-      !newTsk.title.trim() ||
-      !newTsk.description.trim() ||
-      !newTsk.priority
+      newTsk.title.trim() &&
+      newTsk.description.trim() &&
+      newTsk.priority &&
+      newTsk.tags.length > 0
     ) {
+      if (tskToUpdate) {
+        dispatch({
+          type: "EDIT_TASK",
+          payload: newTsk,
+        });
+        toast.success(`${newTsk.title} task is updated successfully`);
+        setShowAddModal(false);
+      } else {
+        dispatch({
+          type: "ADD_TASK",
+          payload: newTsk,
+          isFavorite: false,
+        });
+        toast.success(`${newTsk.title} task is added successfully`);
+        setTsk({ title: "", description: "", tags: [], priority: "" });
+      }
+    } else {
       toast.warn("Please fill out all the required fields");
       return;
     }
 
     /** dispatch an action to add the new task */
-    if (isAdd) {
-      dispatch({
-        type: "ADD_TASK",
-        payload: newTsk,
-      });
-    } else {
-      dispatch({
-        type: "EDIT_TASK",
-        payload: newTsk,
-      });
-    }
-
-    setShowAddModal(false);
-    // set tsk to update state null & false
-    setTskToUpdate(null);
+    // setShowAddModal(false);
+    setTskToUpdate(null); // set tsk to update state null & false
   };
 
   const handleClose = () => {
@@ -71,9 +75,9 @@ export default function AddTaskModal({ tskToUpdate, setTskToUpdate }) {
   return (
     <>
       <div className="bg-black bg-opacity-70 h-full w-full z-10 absolute top-0 left-0"></div>
-      <form className="mx-auto my-10 w-full max-w-[740px] rounded-xl border border-[#FEFBFB]/[36%] bg-[#191D26] p-9 max-md:px-4 lg:my-20 lg:p-11 z-10 absolute lg:top-40 left-0 lg:left-1/3">
+      <form className="mx-auto my-10 w-full max-w-[740px] rounded-xl border border-[#FEFBFB]/[36%] bg-[#191D26] p-9 max-md:px-4 lg:my-20 lg:p-11 z-10 absolute lg:top-1/2 left-0 lg:left-1/3">
         <h2 className="mb-9 text-center text-2xl font-bold text-white lg:mb-11 lg:text-[28px]">
-          {isAdd ? "Add New Task" : "Edit Task"}
+          {tskToUpdate ? "Edit Task" : "Add New Task"}
         </h2>
 
         <div className="space-y-9 text-white lg:space-y-10">
@@ -136,9 +140,9 @@ export default function AddTaskModal({ tskToUpdate, setTskToUpdate }) {
           <button
             type="submit"
             className="rounded bg-blue-600 px-4 py-2 text-white transition-all hover:opacity-80"
-            onClick={() => handleAddTask(tsk, isAdd)}
+            onClick={() => handleAddTask(tsk)}
           >
-            {isAdd ? "Create new Task" : "Update Task"}
+            {tskToUpdate ? "Update Task" : "Create new Task"}
           </button>
           <button
             className="rounded bg-red-600 px-4 py-2 text-white transition-all hover:opacity-80"

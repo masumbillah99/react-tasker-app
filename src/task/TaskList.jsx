@@ -29,7 +29,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onFavorite }) {
         </thead>
 
         <tbody>
-          {tasks?.map((task) => (
+          {tasks.map((task) => (
             <tr
               className="border-b border-[#2E3443] [&>td]:align-baseline [&>td]:px-4 [&>td]:py-2"
               key={task.id}
@@ -58,6 +58,7 @@ export default function TaskList({ tasks, onEdit, onDelete, onFavorite }) {
                 <div>{task.description}</div>
               </td>
               <td>
+                {/* TODO: each tags has different bg-color */}
                 <ul className="flex justify-center gap-1.5 flex-wrap">
                   {task.tags.map((tag, index) => (
                     <li key={index}>
