@@ -22,18 +22,21 @@ export default function TaskBoard() {
   // logic for delete a single task
   const handleDeleteTask = (tskId) => {
     // setModalOpen(true);
-    // const thisTsk = tasks.filter((tsk) => tsk.id === tskId);
+    const thisTsk = tasks.filter((tsk) => tsk.id === tskId);
     // setMessage(thisTsk[0].title + " task");
 
-    const isConfirmed = window.confirm(
-      "Are you sure you want to delete this task?"
-    );
-    if (isConfirmed) {
-      dispatch({
-        type: "DELETE_TASK",
-        payload: tskId,
-      });
-    }
+    dispatch({ type: "DELETE_TASK", payload: tskId });
+    toast.success(`1 task deleted successfully`);
+
+    // const isConfirmed = window.confirm(
+    //   "Are you sure you want to delete this task?"
+    // );
+    // if (isConfirmed) {
+    //   dispatch({
+    //     type: "DELETE_TASK",
+    //     payload: tskId,
+    //   });
+    // }
   };
 
   // logic for delete all task
@@ -42,8 +45,7 @@ export default function TaskBoard() {
     // setMessage("all tasks");
 
     dispatch({ type: "DELETE_ALL_TASK" });
-
-    toast.success(`All tasks are deleted successfully`);
+    toast.success(`${tasks.length} tasks are deleted successfully`);
 
     // const isConfirmed = window.confirm(
     //   "Are you sure you want to delete all the task?"
@@ -106,10 +108,12 @@ export default function TaskBoard() {
                 onEdit={handleEditTask}
                 onDelete={handleDeleteTask}
                 onFavorite={handleToggleFavorite}
+                setModalOpen={setModalOpen}
               />
             ) : (
-              <p className="text-3xl text-center text-white font-semibold py-5">
-                Not found {keyword} task
+              <p className="text-2xl text-center text-white font-semibold py-5">
+                No task found for{" "}
+                <span className="text-green-500">`{keyword}`</span>
               </p>
             )
           ) : (

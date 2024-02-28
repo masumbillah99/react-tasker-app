@@ -1,4 +1,10 @@
-export default function TaskList({ tasks, onEdit, onDelete, onFavorite }) {
+export default function TaskList({
+  tasks,
+  onEdit,
+  onDelete,
+  onFavorite,
+  setModalOpen,
+}) {
   return (
     <div className="overflow-auto">
       <table className="table-fixed overflow-auto xl:w-full">
@@ -74,7 +80,10 @@ export default function TaskList({ tasks, onEdit, onDelete, onFavorite }) {
                 <div className="flex items-center justify-center space-x-3">
                   <button
                     className="text-red-500"
-                    onClick={() => onDelete(task.id)}
+                    onClick={() => {
+                      setModalOpen(true);
+                      onDelete(task.id);
+                    }}
                   >
                     Delete
                   </button>
