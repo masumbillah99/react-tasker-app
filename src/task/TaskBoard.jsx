@@ -28,19 +28,6 @@ export default function TaskBoard() {
     setDeleteAllTsk(false);
     setMessage(thisTsk[0].title + " task");
     setModalOpen(true);
-
-    // dispatch({ type: "DELETE_TASK", payload: tskId });
-    // toast.success(`1 task deleted successfully`);
-
-    // const isConfirmed = window.confirm(
-    //   "Are you sure you want to delete this task?"
-    // );
-    // if (isConfirmed) {
-    //   dispatch({
-    //     type: "DELETE_TASK",
-    //     payload: tskId,
-    //   });
-    // }
   };
 
   // logic for delete all task
@@ -48,16 +35,6 @@ export default function TaskBoard() {
     setDeleteAllTsk(true);
     setMessage(searchResultTasks.length);
     setModalOpen(true);
-
-    // const isConfirmed = window.confirm(
-    //   "Are you sure you want to delete all the task?"
-    // );
-    // if (isConfirmed) {
-    //   dispatch({
-    //     type: "DELETE_ALL_TASK",
-    //     tasks,
-    //   });
-    // }
   };
 
   const handleConfirmDelete = () => {
