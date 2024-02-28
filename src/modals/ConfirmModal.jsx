@@ -1,12 +1,4 @@
 const ConfirmModal = ({ isOpen, onClose, onConfirm, message }) => {
-  const handleConfirm = () => {
-    onConfirm();
-  };
-
-  const handleCancel = () => {
-    onClose();
-  };
-
   return (
     <div
       className={`fixed z-10 inset-0 overflow-y-auto ${isOpen ? "" : "hidden"}`}
@@ -35,7 +27,9 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message }) => {
                 </h3>
                 <div className="mt-2">
                   <p className="text-sm text-gray-500">
-                    You want to delete {message} from the list.
+                    You want to delete{" "}
+                    <span className="text-red-500">{message}</span> from the
+                    list.
                   </p>
                 </div>
               </div>

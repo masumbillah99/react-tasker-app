@@ -13,6 +13,8 @@ export default function TaskBoard() {
   const [tskToUpdate, setTskToUpdate] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [message, setMessage] = useState("");
+  const [deleteTskId, setDeleteTskId] = useState(null);
+  const [deleteAllTsk, setDeleteAllTsk] = useState(false);
 
   const handleEditTask = (tsk) => {
     setTskToUpdate(tsk);
@@ -21,12 +23,14 @@ export default function TaskBoard() {
 
   // logic for delete a single task
   const handleDeleteTask = (tskId) => {
-    // setModalOpen(true);
     const thisTsk = tasks.filter((tsk) => tsk.id === tskId);
-    // setMessage(thisTsk[0].title + " task");
+    setDeleteTskId(tskId);
+    setDeleteAllTsk(false);
+    setMessage(thisTsk[0].title + " task");
+    setModalOpen(true);
 
-    dispatch({ type: "DELETE_TASK", payload: tskId });
-    toast.success(`1 task deleted successfully`);
+    // dispatch({ type: "DELETE_TASK", payload: tskId });
+    // toast.success(`1 task deleted successfully`);
 
     // const isConfirmed = window.confirm(
     //   "Are you sure you want to delete this task?"
@@ -41,11 +45,9 @@ export default function TaskBoard() {
 
   // logic for delete all task
   const handleDeleteAllTask = () => {
-    // setModalOpen(true);
-    // setMessage("all tasks");
-
-    dispatch({ type: "DELETE_ALL_TASK" });
-    toast.success(`${tasks.length} tasks are deleted successfully`);
+    setDeleteAllTsk(true);
+    setMessage(searchResultTasks.length);
+    setModalOpen(true);
 
     // const isConfirmed = window.confirm(
     //   "Are you sure you want to delete all the task?"
@@ -56,6 +58,18 @@ export default function TaskBoard() {
     //     tasks,
     //   });
     // }
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteAllTsk) {
+      dispatch({ type: "DELETE_ALL_TASK" });
+      handleCloseModal();
+      toast.success(`${tasks.length} tasks are deleted successfully`);
+    } else {
+      dispatch({ type: "DELETE_TASK", payload: deleteTskId });
+      handleCloseModal();
+      toast.success(`Task deleted successfully`);
+    }
   };
 
   // logic for make favorite a task
@@ -70,6 +84,10 @@ export default function TaskBoard() {
   const searchResultTasks = tasks.filter((tsk) =>
     tsk.title.toLowerCase().includes(keyword.toLowerCase())
   );
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
 
   return (
     <section className="mb-20" id="tasks">
@@ -97,7 +115,8 @@ export default function TaskBoard() {
             <ConfirmModal
               isOpen={modalOpen}
               message={message}
-              onClose={() => setModalOpen(false)}
+              onConfirm={handleConfirmDelete}
+              onClose={handleCloseModal}
             />
           )}
 
