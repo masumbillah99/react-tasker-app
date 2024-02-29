@@ -1,8 +1,8 @@
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { TaskContext } from "../context/TaskContext";
+import AddTaskModal from "../modals/AddTaskModal";
 import ConfirmModal from "../modals/ConfirmModal";
-import AddTaskModal from "./AddTaskModal";
 import SearchTask from "./SearchTask";
 import TaskAction from "./TaskAction";
 import TaskList from "./TaskList";
@@ -33,7 +33,7 @@ export default function TaskBoard() {
   // logic for delete all task
   const handleDeleteAllTask = () => {
     setDeleteAllTsk(true);
-    setMessage(searchResultTasks.length);
+    setMessage(searchResultTasks.length + " task");
     setModalOpen(true);
   };
 
